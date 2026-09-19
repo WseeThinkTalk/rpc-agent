@@ -1,0 +1,47 @@
+# Binaries
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Go build output
+/bin/
+/out/
+
+# Test
+*.test
+*.out
+coverage.txt
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Env & secrets
+.env
+*.local.yaml
+*.md
+
+# Logs
+/logs/
+*.log
+
+# Temp
+tmp/
+
+# 全局忽略所有bat/sh脚本
+*.bat
+*.sh
+
+# 目录统一写法
+logs/
+bin/
+claude/.worktrees/

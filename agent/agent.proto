@@ -1,0 +1,77 @@
+syntax = "proto3";
+
+package agent;
+
+option go_package = "./pb";
+
+service Agent {
+  rpc Chat(ChatRequest) returns (stream ChatEvent);
+  rpc Stop(StopRequest) returns (StopResponse);
+  rpc ListSessions(ListSessionsRequest) returns (ListSessionsResponse);
+  rpc DeleteSession(DeleteSessionRequest) returns (DeleteSessionResponse);
+  rpc GetHistory(GetHistoryRequest) returns (GetHistoryResponse);
+}
+
+message ChatRequest {
+  int64 user_id = 1;
+  string session_id = 2;
+  string message = 3;
+}
+
+message ChatEvent {
+  string type = 1;
+  string content = 2;
+  string tool_name = 3;
+  string tool_data = 4;
+  string finish_reason = 5;
+}
+
+message StopRequest {
+  int64 user_id = 1;
+  string session_id = 2;
+}
+
+message StopResponse {}
+
+message SessionSummary {
+  string session_id = 1;
+  string title = 2;
+  int32 message_count = 3;
+  int64 created_at = 4;
+  int64 updated_at = 5;
+}
+
+message ListSessionsRequest {
+  int64 user_id = 1;
+}
+
+message ListSessionsResponse {
+  repeated SessionSummary sessions = 1;
+}
+
+message DeleteSessionRequest {
+  int64 user_id = 1;
+  string session_id = 2;
+}
+
+message DeleteSessionResponse {
+  bool success = 1;
+}
+
+message HistoryMessage {
+  string role = 1;
+  string content = 2;
+}
+
+message GetHistoryRequest {
+  int64 user_id = 1;
+  string session_id = 2;
+}
+
+message GetHistoryResponse {
+  string session_id = 1;
+  string title = 2;
+  repeated HistoryMessage messages = 3;
+  int64 created_at = 4;
+  int64 updated_at = 5;
+}

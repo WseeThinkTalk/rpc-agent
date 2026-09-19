@@ -1,0 +1,20 @@
+services:
+  rpc-agent:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: rpc-agent:latest
+    container_name: rpc-agent
+    restart: unless-stopped
+    ports:
+      - "8087:8087"
+    volumes:
+      - ./etc:/app/etc
+    env_file:
+      - .env
+    networks:
+      - thinktalk-net
+
+networks:
+  thinktalk-net:
+    driver: bridge

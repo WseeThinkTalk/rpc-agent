@@ -24,14 +24,20 @@ func NewGetHistoryLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetHis
 	}
 }
 
-func (l *GetHistoryLogic) GetHistory(in *agent.GetHistoryRequest) (*agent.GetHistoryResponse, error) {
+func (l *GetHistoryLogic) GetHistory(in *agent.GetHistoryRequest) (resp *agent.GetHistoryResponse, err error) {
+	resp = new(agent.GetHistoryResponse)
+	resp.Code = 200
+	resp.Msg = "success"
+	resp.Data = new(agent.GetHistoryData)
+	resp.Data.Messages = make([]*agent.HistoryMessage, 0)
+
 	sess, err := l.svcCtx.SessMgr.Load(l.ctx, in.UserId, in.SessionId)
 	if err != nil {
 		return nil, err
 	}
-	msgs := make([]*agent.HistoryMessage, len(sess.Messages))
-	for i, m := range sess.Messages {
-		msgs[i] = &agent.HistoryMessage{Role: m.Role, Content: m.Content}
+
+	for _, m := range sess.Messages {
+		resp.Data.Messages = append(resp.Data.Messages, &agent.HistoryMessage{Role: m.Role, Content: m.Content})
 	}
 	title := sess.Title
 	if title == "" {
@@ -42,15 +48,11 @@ func (l *GetHistoryLogic) GetHistory(in *agent.GetHistoryRequest) (*agent.GetHis
 			}
 		}
 	}
-	return &agent.GetHistoryResponse{
-		Code: 200,
-		Msg:  "success",
-		Data: &agent.GetHistoryData{
-			SessionId: in.SessionId,
-			Title:     title,
-			Messages:  msgs,
-			CreatedAt: sess.CreatedAt,
-			UpdatedAt: sess.UpdatedAt,
-		},
-	}, nil
+
+	resp.Data.SessionId = in.SessionId
+	resp.Data.Title = title
+	resp.Data.CreatedAt = sess.CreatedAt
+	resp.Data.UpdatedAt = sess.UpdatedAt
+
+	return resp, nil
 }

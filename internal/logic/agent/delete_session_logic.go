@@ -23,17 +23,19 @@ func NewDeleteSessionLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Del
 	}
 }
 
-func (l *DeleteSessionLogic) DeleteSession(in *agent.DeleteSessionRequest) (*agent.DeleteSessionResponse, error) {
-	if err := l.svcCtx.SessMgr.DeleteSession(l.ctx, in.UserId, in.SessionId); err != nil {
-		return &agent.DeleteSessionResponse{
-			Code: 500,
-			Msg:  err.Error(),
-			Data: &agent.DeleteSessionData{Success: false},
-		}, err
+func (l *DeleteSessionLogic) DeleteSession(in *agent.DeleteSessionRequest) (resp *agent.DeleteSessionResponse, err error) {
+	resp = new(agent.DeleteSessionResponse)
+	resp.Code = 200
+	resp.Msg = "success"
+	resp.Data = new(agent.DeleteSessionData)
+
+	if err = l.svcCtx.SessMgr.DeleteSession(l.ctx, in.UserId, in.SessionId); err != nil {
+		resp.Code = 500
+		resp.Msg = err.Error()
+		resp.Data.Success = false
+		return resp, err
 	}
-	return &agent.DeleteSessionResponse{
-		Code: 200,
-		Msg:  "success",
-		Data: &agent.DeleteSessionData{Success: true},
-	}, nil
+
+	resp.Data.Success = true
+	return resp, nil
 }

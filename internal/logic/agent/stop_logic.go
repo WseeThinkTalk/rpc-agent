@@ -24,11 +24,13 @@ func NewStopLogic(ctx context.Context, svcCtx *svc.ServiceContext) *StopLogic {
 	}
 }
 
-func (l *StopLogic) Stop(in *agent.StopRequest) (*agent.StopResponse, error) {
+func (l *StopLogic) Stop(in *agent.StopRequest) (resp *agent.StopResponse, err error) {
+	resp = new(agent.StopResponse)
+	resp.Code = 200
+	resp.Msg = "success"
+
 	sessionKey := model.SessionKey(in.UserId, in.SessionId)
 	l.svcCtx.StopSession(sessionKey)
-	return &agent.StopResponse{
-		Code: 200,
-		Msg:  "success",
-	}, nil
+
+	return resp, nil
 }

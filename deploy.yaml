@@ -1,0 +1,75 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: ${APP_NAMESPACE}
+  labels:
+    version: v1
+    app: rpc-agent
+    app.kubernetes.io/version: v1
+    app.kubernetes.io/name: rpc-agent
+  name: rpc-agent-v1
+  annotations:
+    servicemesh.kubesphere.io/enabled: 'true'
+spec:
+  replicas: ${REPLICAS}
+  selector:
+    matchLabels:
+      version: v1
+      app: rpc-agent
+      app.kubernetes.io/version: v1
+      app.kubernetes.io/name: rpc-agent
+  template:
+    metadata:
+      labels:
+        version: v1
+        app: rpc-agent
+        app.kubernetes.io/version: v1
+        app.kubernetes.io/name: rpc-agent
+      annotations:
+        sidecar.istio.io/inject: 'true'
+    spec:
+      containers:
+        - name: rpc-agent
+          imagePullPolicy: Always
+          image: ${IMAGE}
+          ports:
+            - name: grpc-agent
+              protocol: TCP
+              containerPort: 8080
+          env:
+            - name: ENV
+              value: ${ENV_NAME}
+      serviceAccount: default
+      affinity: {}
+      initContainers: []
+      volumes: []
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 25%
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: ${APP_NAMESPACE}
+  labels:
+    version: v1
+    app: rpc-agent
+    app.kubernetes.io/version: v1
+    app.kubernetes.io/name: rpc-agent
+  annotations:
+    kubesphere.io/serviceType: statelessservice
+    servicemesh.kubesphere.io/enabled: 'true'
+  name: rpc-agent
+spec:
+  sessionAffinity: None
+  selector:
+    app: rpc-agent
+    app.kubernetes.io/version: v1
+    app.kubernetes.io/name: rpc-agent
+  ports:
+    - name: grpc-agent
+      protocol: TCP
+      port: 8080
+      targetPort: 8080

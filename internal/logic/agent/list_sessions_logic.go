@@ -23,26 +23,27 @@ func NewListSessionsLogic(ctx context.Context, svcCtx *svc.ServiceContext) *List
 	}
 }
 
-func (l *ListSessionsLogic) ListSessions(in *agent.ListSessionsRequest) (*agent.ListSessionsResponse, error) {
+func (l *ListSessionsLogic) ListSessions(in *agent.ListSessionsRequest) (resp *agent.ListSessionsResponse, err error) {
+	resp = new(agent.ListSessionsResponse)
+	resp.Code = 200
+	resp.Msg = "success"
+	resp.Data = new(agent.ListSessionsData)
+	resp.Data.Sessions = make([]*agent.SessionSummary, 0)
+
 	summaries, err := l.svcCtx.SessMgr.ListSessions(l.ctx, in.UserId)
 	if err != nil {
 		return nil, err
 	}
-	pbSessions := make([]*agent.SessionSummary, len(summaries))
-	for i, sum := range summaries {
-		pbSessions[i] = &agent.SessionSummary{
+
+	for _, sum := range summaries {
+		resp.Data.Sessions = append(resp.Data.Sessions, &agent.SessionSummary{
 			SessionId:    sum.SessionID,
 			Title:        sum.Title,
 			MessageCount: sum.MessageCount,
 			CreatedAt:    sum.CreatedAt,
 			UpdatedAt:    sum.UpdatedAt,
-		}
+		})
 	}
-	return &agent.ListSessionsResponse{
-		Code: 200,
-		Msg:  "success",
-		Data: &agent.ListSessionsData{
-			Sessions: pbSessions,
-		},
-	}, nil
+
+	return resp, nil
 }

@@ -25,8 +25,6 @@ func NewDeleteSessionLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Del
 
 func (l *DeleteSessionLogic) DeleteSession(in *agent.DeleteSessionRequest) (resp *agent.DeleteSessionResponse, err error) {
 	resp = new(agent.DeleteSessionResponse)
-	resp.Code = 200
-	resp.Msg = "success"
 	resp.Data = new(agent.DeleteSessionData)
 
 	if err = l.svcCtx.SessMgr.DeleteSession(l.ctx, in.UserId, in.SessionId); err != nil {

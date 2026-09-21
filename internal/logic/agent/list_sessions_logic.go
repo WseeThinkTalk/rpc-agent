@@ -25,12 +25,16 @@ func NewListSessionsLogic(ctx context.Context, svcCtx *svc.ServiceContext) *List
 
 func (l *ListSessionsLogic) ListSessions(in *agent.ListSessionsRequest) (resp *agent.ListSessionsResponse, err error) {
 	resp = new(agent.ListSessionsResponse)
+	resp.Code = 200
+	resp.Msg = "success"
 	resp.Data = new(agent.ListSessionsData)
 	resp.Data.Sessions = make([]*agent.SessionSummary, 0)
 
 	summaries, err := l.svcCtx.SessMgr.ListSessions(l.ctx, in.UserId)
 	if err != nil {
-		return nil, err
+		resp.Code = 500
+		resp.Msg = err.Error()
+		return resp, nil
 	}
 
 	for _, sum := range summaries {

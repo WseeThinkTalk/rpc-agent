@@ -26,12 +26,16 @@ func NewGetHistoryLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetHis
 
 func (l *GetHistoryLogic) GetHistory(in *agent.GetHistoryRequest) (resp *agent.GetHistoryResponse, err error) {
 	resp = new(agent.GetHistoryResponse)
+	resp.Code = 200
+	resp.Msg = "success"
 	resp.Data = new(agent.GetHistoryData)
 	resp.Data.Messages = make([]*agent.HistoryMessage, 0)
 
 	sess, err := l.svcCtx.SessMgr.Load(l.ctx, in.UserId, in.SessionId)
 	if err != nil {
-		return nil, err
+		resp.Code = 500
+		resp.Msg = err.Error()
+		return resp, nil
 	}
 
 	for _, m := range sess.Messages {

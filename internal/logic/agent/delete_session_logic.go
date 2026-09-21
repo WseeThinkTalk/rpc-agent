@@ -5,6 +5,7 @@ import (
 
 	"rpc-agent/agent"
 	"rpc-agent/internal/svc"
+	"rpc-agent/pkg/code"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -28,7 +29,7 @@ func (l *DeleteSessionLogic) DeleteSession(in *agent.DeleteSessionRequest) (resp
 	resp.Data = new(agent.DeleteSessionData)
 
 	if err = l.svcCtx.SessMgr.DeleteSession(l.ctx, in.UserId, in.SessionId); err != nil {
-		resp.Code = 500
+		resp.Code = int64(code.ServerErr.Code())
 		resp.Msg = err.Error()
 		resp.Data.Success = false
 		return resp, nil

@@ -37,14 +37,16 @@ func (l *GetHistoryLogic) GetHistory(in *agent.GetHistoryRequest) (resp *agent.G
 		return resp, nil
 	}
 
-	for _, m := range sess.Messages {
-		resp.Data.Messages = append(resp.Data.Messages, &agent.HistoryMessage{Role: m.Role, Content: m.Content})
+	// 转换会话历史消息为响应 DTO
+	for _, v := range sess.Messages {
+		resp.Data.Messages = append(resp.Data.Messages, &agent.HistoryMessage{Role: v.Role, Content: v.Content})
 	}
 	title := sess.Title
 	if title == "" {
-		for _, m := range sess.Messages {
-			if m.Role == "user" {
-				title = model.TruncateRunes(m.Content, 30)
+		// 从首条用户输入提取会话标题
+		for _, v := range sess.Messages {
+			if v.Role == "user" {
+				title = model.TruncateRunes(v.Content, 30)
 				break
 			}
 		}

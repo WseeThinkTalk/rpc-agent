@@ -36,13 +36,14 @@ func (l *ListSessionsLogic) ListSessions(in *agent.ListSessionsRequest) (resp *a
 		return resp, nil
 	}
 
-	for _, sum := range summaries {
+	// 组装历史会话概览列表
+	for _, v := range summaries {
 		resp.Data.Sessions = append(resp.Data.Sessions, &agent.SessionSummary{
-			SessionId:    sum.SessionID,
-			Title:        sum.Title,
-			MessageCount: sum.MessageCount,
-			CreatedAt:    sum.CreatedAt,
-			UpdatedAt:    sum.UpdatedAt,
+			SessionId:    v.SessionID,
+			Title:        v.Title,
+			MessageCount: v.MessageCount,
+			CreatedAt:    v.CreatedAt,
+			UpdatedAt:    v.UpdatedAt,
 		})
 	}
 

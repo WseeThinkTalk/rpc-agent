@@ -26,8 +26,6 @@ func NewGetHistoryLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetHis
 
 func (l *GetHistoryLogic) GetHistory(in *agent.GetHistoryRequest) (resp *agent.GetHistoryResponse, err error) {
 	resp = new(agent.GetHistoryResponse)
-	resp.Code = 200
-	resp.Msg = "success"
 	resp.Data = new(agent.GetHistoryData)
 	resp.Data.Messages = make([]*agent.HistoryMessage, 0)
 

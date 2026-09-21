@@ -6,6 +6,7 @@ import (
 	"rpc-agent/agent"
 	"rpc-agent/internal/model"
 	"rpc-agent/internal/svc"
+	"rpc-agent/pkg/code"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -31,7 +32,7 @@ func (l *GetHistoryLogic) GetHistory(in *agent.GetHistoryRequest) (resp *agent.G
 
 	sess, err := l.svcCtx.SessMgr.Load(l.ctx, in.UserId, in.SessionId)
 	if err != nil {
-		resp.Code = 500
+		resp.Code = int64(code.ServerErr.Code())
 		resp.Msg = err.Error()
 		return resp, nil
 	}

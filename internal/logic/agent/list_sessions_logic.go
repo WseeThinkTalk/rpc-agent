@@ -5,6 +5,7 @@ import (
 
 	"rpc-agent/agent"
 	"rpc-agent/internal/svc"
+	"rpc-agent/pkg/code"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -30,7 +31,7 @@ func (l *ListSessionsLogic) ListSessions(in *agent.ListSessionsRequest) (resp *a
 
 	summaries, err := l.svcCtx.SessMgr.ListSessions(l.ctx, in.UserId)
 	if err != nil {
-		resp.Code = 500
+		resp.Code = int64(code.ServerErr.Code())
 		resp.Msg = err.Error()
 		return resp, nil
 	}

@@ -2,7 +2,7 @@ package errorx
 
 import (
 	"fmt"
-	constantpublic "rpc-user/pkg/constant/common/public"
+	constantpublic "rpc-agent/pkg/constant/common/public"
 )
 
 type CodeError struct {

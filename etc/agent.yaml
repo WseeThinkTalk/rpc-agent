@@ -61,6 +61,6 @@ SessionRedis:
 DataSource: host=${DB_HOST} port=${DB_PORT} user=${DB_USER} password=${DB_PASS} dbname=Ask sslmode=disable
 
 Embedding:
-  APIKey: ${EMBEDDING_API_KEY:sk-vblswvetochjtoiqucscsyscrpiwdorgddyxqswonlsdxsct}
+  APIKey: ${EMBEDDING_API_KEY}
   Model: BAAI/bge-large-zh-v1.5
   BaseURL: https://api.siliconflow.cn/v1

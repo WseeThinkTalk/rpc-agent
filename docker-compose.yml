@@ -10,8 +10,8 @@ services:
       - "8087:8087"
     volumes:
       - ./etc:/app/etc
-    env_file:
-      - .env
+    environment:
+      - ETCD_ENDPOINTS=10.8.0.1:2379
     networks:
       - thinktalk-net
 

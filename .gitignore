@@ -45,3 +45,7 @@ tmp/
 logs/
 bin/
 claude/.worktrees/
+
+# Etcd remote config cache
+etc/etcd.yaml
+etcd.yaml

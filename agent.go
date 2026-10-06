@@ -9,10 +9,9 @@ import (
 	"rpc-agent/internal/config"
 	agentserver "rpc-agent/internal/server/agent"
 	"rpc-agent/internal/svc"
-	"rpc-agent/pkg/env"
+	"rpc-agent/pkg/lib/etcdx"
 	"rpc-agent/pkg/lib/zapx"
 
-	"github.com/zeromicro/go-zero/core/conf"
 	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/core/service"
 	"github.com/zeromicro/go-zero/zrpc"
@@ -20,15 +19,20 @@ import (
 	"google.golang.org/grpc/reflection"
 )
 
-var configFile = flag.String("f", "etc/agent.yaml", "the config file")
+func runRemoteConfig() *config.Config {
+	var c config.Config
+	etcdx.MustLoadRemoteConfig("/thinktalk/config/agent.rpc", &c)
+	return &c
+}
 
 func main() {
 	flag.Parse()
 
-	env.LoadEnv()
-
-	var c config.Config
-	conf.MustLoad(*configFile, &c, conf.UseEnv())
+	// 从 Etcd 配置中心拉取远程配置 (Fail-Fast)
+	c := runRemoteConfig()
+	if c == nil {
+		return
+	}
 
 	// init logger
 	writer, err := zapx.NewZapWriter()
@@ -36,7 +40,7 @@ func main() {
 		logx.SetWriter(writer)
 	}
 
-	ctx := svc.NewServiceContext(c)
+	ctx := svc.NewServiceContext(*c)
 
 	s := zrpc.MustNewServer(c.RpcServerConf, func(grpcServer *grpc.Server) {
 		registerServer(ctx, grpcServer)

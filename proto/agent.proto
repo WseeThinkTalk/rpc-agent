@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package agent;
 
-option go_package = "./pb";
+option go_package = "api-thinktalk/client/agent/pb;pb";
 
 service Agent {
   rpc Chat(ChatRequest) returns (stream ChatEvent);
@@ -31,7 +31,10 @@ message StopRequest {
   string session_id = 2;
 }
 
-message StopResponse {}
+message StopResponse {
+  int64 code = 1;
+  string msg = 2;
+}
 
 message SessionSummary {
   string session_id = 1;
@@ -45,8 +48,14 @@ message ListSessionsRequest {
   int64 user_id = 1;
 }
 
-message ListSessionsResponse {
+message ListSessionsData {
   repeated SessionSummary sessions = 1;
+}
+
+message ListSessionsResponse {
+  int64 code = 1;
+  string msg = 2;
+  ListSessionsData data = 3;
 }
 
 message DeleteSessionRequest {
@@ -54,8 +63,14 @@ message DeleteSessionRequest {
   string session_id = 2;
 }
 
-message DeleteSessionResponse {
+message DeleteSessionData {
   bool success = 1;
+}
+
+message DeleteSessionResponse {
+  int64 code = 1;
+  string msg = 2;
+  DeleteSessionData data = 3;
 }
 
 message HistoryMessage {
@@ -68,10 +83,16 @@ message GetHistoryRequest {
   string session_id = 2;
 }
 
-message GetHistoryResponse {
+message GetHistoryData {
   string session_id = 1;
   string title = 2;
   repeated HistoryMessage messages = 3;
   int64 created_at = 4;
   int64 updated_at = 5;
+}
+
+message GetHistoryResponse {
+  int64 code = 1;
+  string msg = 2;
+  GetHistoryData data = 3;
 }
